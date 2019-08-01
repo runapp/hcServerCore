@@ -12,10 +12,10 @@ class RateLimiter {
   /**
    * Create a ratelimiter instance.
    */
-  constructor () {
+  constructor() {
     this.records = {};
     this.halflife = 30 * 1000; // milliseconds
-    this.threshold = 25;
+    this.threshold = 50;
     this.hashes = [];
   }
 
@@ -26,7 +26,7 @@ class RateLimiter {
     *
     * @return {Object} Object containing the record meta
     */
-  search (id) {
+  search(id) {
     let record = this.records[id];
 
     if (!record) {
@@ -47,14 +47,14 @@ class RateLimiter {
     *
     * @return {Boolean} True if record threshold has been exceeded
     */
-  frisk (id, deltaScore) {
+  frisk(id, deltaScore) {
     let record = this.search(id);
 
     if (record.arrested) {
       return true;
     }
 
-    record.score *= Math.pow(2, -(Date.now() - record.time ) / this.halflife);
+    record.score *= Math.pow(2, -(Date.now() - record.time) / this.halflife);
     record.score += deltaScore;
     record.time = Date.now();
 
@@ -70,7 +70,7 @@ class RateLimiter {
     *
     * @param {String} id target id / address
     */
-  arrest (id, hash) {
+  arrest(id, hash) {
     let record = this.search(id);
 
     record.arrested = true;
@@ -82,7 +82,7 @@ class RateLimiter {
     *
     * @param {String} id target id / address
     */
-  pardon (id) {
+  pardon(id) {
     if (typeof this.hashes[id] !== 'undefined') {
       id = this.hashes[id];
     }
